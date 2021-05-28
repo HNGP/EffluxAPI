@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const fs = require("fs");
+var request = require("request");
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
@@ -15,7 +16,13 @@ app.get("/library", function (req, res) {
 });
 
 app.get("/stream/:movid", function (req, res) {
-  res.render(__dirname + "/views/playback", {id: req.params.movid});
+  var API= 'ebce8643';
+  request("http://www.omdbapi.com/?" + "&i=" + req.params.movid + "&apikey=" + API, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var lol = JSON.parse(body);
+      res.render(__dirname + "/views/playback", { id: req.params.movid, data: lol });
+    }
+  })
 });
 
 app.get("/settings", function (req, res) {

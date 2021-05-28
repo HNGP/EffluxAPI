@@ -28,6 +28,11 @@
       watch
     </p>
     <h1><%= id %></h1>
+    <h1><%= data["Title"] %></h1>
+    <h2>Year: <%= data["Year"] %> Runtime: <%= data["Runtime"] %> </h2>
+    <h2>Director:<%= data["Director"] %></h2>
+    <img src="<%=data['Poster']%>" alt="">
+    <p><%= data["Plot"] %></p>
     <video id="videoPlayer" width="650" controls muted="muted" autoplay>
       <source src="/efflux-api/<%= id %>"  type="video/mp4" />
     </video>
