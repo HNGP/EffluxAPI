@@ -2,11 +2,27 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/views'));
+
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
+  res.render(__dirname + "/views/index");
 });
 
-app.get("/efflux-api", function (req, res) {
+app.get("/library", function (req, res) {
+  res.render(__dirname + "/views/library");
+});
+
+app.get("/stream/:movid", function (req, res) {
+  res.render(__dirname + "/views/playback", {id: req.params.movid});
+});
+
+app.get("/settings", function (req, res) {
+  res.render(__dirname + "/views/settings");
+});
+
+app.get("/efflux-api/:movid", function (req, res) {
   // Ensure there is a range given for the video
   const range = req.headers.range;
   if (!range) {
@@ -14,8 +30,8 @@ app.get("/efflux-api", function (req, res) {
   }
 
   // get video stats (about 61MB)
-  const videoPath = "SDR-VP9.webm";
-  const videoSize = fs.statSync("SDR-VP9.webm").size;
+  const videoPath = req.params.movid + ".mp4";
+  const videoSize = fs.statSync(videoPath).size;
 
   // Parse Range
   // Example: "bytes=32324-"
@@ -29,7 +45,7 @@ app.get("/efflux-api", function (req, res) {
     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
     "Accept-Ranges": "bytes",
     "Content-Length": contentLength,
-    "Content-Type": "video/webm",
+    "Content-Type": "video/mp4",
   };
 
   // HTTP Status 206 for Partial Content
