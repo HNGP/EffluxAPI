@@ -37,7 +37,8 @@ app.get("/efflux-api/:movid", function (req, res) {
   }
 
   // get video stats (about 61MB)
-  const videoPath = req.params.movid + ".mp4";
+
+  const videoPath = "/media/pi/KD's Seagate/Samples/"+req.params.movid + ".mp4";
   const videoSize = fs.statSync(videoPath).size;
 
   // Parse Range
