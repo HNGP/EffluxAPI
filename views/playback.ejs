@@ -3,39 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      body {
-        margin: 40px auto;
-        max-width: 650px;
-        line-height: 1.6;
-        font-size: 18px;
-        font-family: "Courier New", Courier, monospace;
-        color: #444;
-        padding: 0 10px;
-      }
-      h2 {
-        line-height: 1.2;
-      }
-    </style>
+    <title>Efflux</title>
+   <link href="/css/style.css" rel="stylesheet">
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
   </head>
 
   <body>
-    <h2>Efflux Video Streaming</h2>
-    <p>This video is 4MB and is being streamed instead of downloaded.</p>
-    <p>
-      Feel free to seek through the video and it only loads the part you want to
-      watch
-    </p>
-    <h1><%= id %></h1>
-    <h1><%= data["Title"] %></h1>
-    <h2>Year: <%= data["Year"] %> Runtime: <%= data["Runtime"] %> </h2>
-    <h2>Director:<%= data["Director"] %></h2>
-    <img src="<%=data['Poster']%>" alt="">
-    <p><%= data["Plot"] %></p>
-    <video id="videoPlayer" width="650" controls muted="muted" autoplay>
-      <source src="/efflux-api/<%= id %>"  type="video/mp4" />
+    <div class="navlogo" style="padding: 30px 50px">
+     <a href="/"><h1 style="color: #21afb8; cursor: pointer;">efflux</h1></a>
+    </div>
+    <div class="container" style="margin-top: 10px; padding-bottom: 140px;">
+    <video id="videoPlayer" width="100%" controls muted="muted" autoplay>
+      <source src="/efflux-api/<%= id %>" type="video/mp4" />
     </video>
-    <i>KDCloudy</i>
+    <div class="row" style="margin-top: 40px ;">
+      <div class="col-lg-3 col-md-6">
+        <div class="thumbnail2">
+          <img src="<%=data['Poster']%>" >
+        </div>
+      </div> 
+      <div class="col-lg-8 col-md-6" style="margin-left: 10px;">
+        <h1><%= data["Title"] %> (<%= data["Year"] %>)</h1>
+        <p> <%= data["Runtime"] %> </p>
+        <p> </p>
+        <p>Directed by <%= data["Director"] %></->
+        <p><%= data["Plot"] %></p>
+        <p>Starring: <%= data["Actors"] %></p>
+        <p><strong>Streaming from Raspberry Pi</strong></p>
+      </div>
+    </div>
+    </div>
   </body>
 </html>

@@ -3,16 +3,46 @@ const app = express();
 const fs = require("fs");
 var request = require("request");
 
+const moviePath = "/media/pi/KD's Seagate/Samples/";
+//const moviePath = "/Volumes/KD's Seagate/Samples/";
+
+const movie_list = [
+  {
+    id: 'tt0372784',
+    poster: 'https://m.media-amazon.com/images/M/MV5BOTY4YjI2N2MtYmFlMC00ZjcyLTg3YjEtMDQyM2ZjYzQ5YWFkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg'
+  },
+  {
+    id: 'tt0448115',
+    poster: 'https://m.media-amazon.com/images/M/MV5BOWZhZjE4NGQtODg5Ni00MjQ1LWJmMzAtNzQ2N2M1NzYzMDJkXkEyXkFqcGdeQXVyMjMwNDgzNjc@._V1_SX300.jpg'
+  },
+  {
+    id: 'tt2381249',
+    poster: 'https://m.media-amazon.com/images/M/MV5BOTFmNDA3ZjMtN2Y0MC00NDYyLWFlY2UtNTQ4OTQxMmY1NmVjXkEyXkFqcGdeQXVyNTg4NDQ4NDY@._V1_SX300.jpg'
+  },
+  {
+    id: 'tt2935510',
+    poster: 'https://m.media-amazon.com/images/M/MV5BZTllZTdlOGEtZTBmMi00MGQ5LWFjN2MtOGEyZTliNGY1MzFiXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg'
+  },
+  {
+    id: 'tt6146586',
+    poster: 'https://m.media-amazon.com/images/M/MV5BMDg2YzI0ODctYjliMy00NTU0LTkxODYtYTNkNjQwMzVmOTcxXkEyXkFqcGdeQXVyNjg2NjQwMDQ@._V1_SX300.jpg'
+  },
+  {
+    id: 'tt8079248',
+    poster: 'https://m.media-amazon.com/images/M/MV5BMjQ0NTI0NjkyN15BMl5BanBnXkFtZTgwNzY0MTE0NzM@._V1_SX300.jpg'
+  },
+]
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/views'));
 
 app.get("/", function (req, res) {
   res.render(__dirname + "/views/index");
+  console.log(movie_list);
 });
 
 app.get("/library", function (req, res) {
-  res.render(__dirname + "/views/library");
+  res.render(__dirname + "/views/library", {movies: movie_list});
 });
 
 app.get("/stream/:movid", function (req, res) {
@@ -35,19 +65,13 @@ app.get("/efflux-api/:movid", function (req, res) {
   if (!range) {
     res.status(400).send("Requires Range header");
   }
-
-  // get video stats (about 61MB)
-
-  const videoPath = "/media/pi/KD's Seagate/Samples/"+req.params.movid + ".mp4";
+  const videoPath = moviePath+req.params.movid + ".mp4";
   const videoSize = fs.statSync(videoPath).size;
 
-  // Parse Range
-  // Example: "bytes=32324-"
   const CHUNK_SIZE = 10 ** 6; // 1MB
   const start = Number(range.replace(/\D/g, ""));
   const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
 
-  // Create headers
   const contentLength = end - start + 1;
   const headers = {
     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
@@ -56,15 +80,18 @@ app.get("/efflux-api/:movid", function (req, res) {
     "Content-Type": "video/mp4",
   };
 
-  // HTTP Status 206 for Partial Content
   res.writeHead(206, headers);
 
-  // create video read stream for this particular chunk
   const videoStream = fs.createReadStream(videoPath, { start, end });
-
-  // Stream the video chunk to the client
+  console.log(headers);
+  
   videoStream.pipe(res);
 });
+
+app.get("/efflux-api/download/:movid", function(req, res){
+  const videoPath = moviePath+req.params.movid + ".mp4";
+  res.sendFile(videoPath);
+})
 
 app.listen(8000, function () {
   console.log("Listening on port 8000!");

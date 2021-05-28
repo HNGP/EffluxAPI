@@ -26,17 +26,19 @@
             </div>
         </div>
     
-    <div class="row">
+    <div class="row" style="margin-top: 20px ;">
+        <% movies.forEach(function(movie){ %>
         <div class="col-3">
             <div class="thumbnail">
-                <a href="/stream/tt0382625">
-                <img src='./img/davincicode.jpg'>
+                <a href="/stream/<%=movie.id%>">
+                <img src='<%=movie.poster %>'>
                 </a>
-            </div>
         </div>
+    
+        </div>
+    <% }) %>
         
-        
-        <div class="col-3">
+        <!-- <div class="col-3">
             <div  class="thumbnail">
             <a href="./video.html">
                 <img src='./img/ted2.jpg'>
@@ -93,7 +95,7 @@
                 <img src='./img/zsjl.jpg'>
                 </a>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 </body>
